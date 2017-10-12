@@ -153,7 +153,7 @@ public class RestClient {
 
 	private HttpUriRequest addBodyParams(HttpUriRequest request) throws Exception {
 		if (jsonBody != null) {
-			request.addHeader("Content-Type", "application/json");
+			request.addHeader("Content-Type", "application/xml");
 			if (request instanceof HttpPost)
 				((HttpPost) request).setEntity(new StringEntity(jsonBody, "UTF-8"));
 			else if (request instanceof HttpPut)
