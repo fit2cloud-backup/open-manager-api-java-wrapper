@@ -17,6 +17,7 @@ import com.fit2cloud.ome.model.DeviceInventoryResult;
 import com.fit2cloud.ome.model.DevicesResponse;
 import com.fit2cloud.ome.model.DocumentElement;
 import com.fit2cloud.ome.model.VirtualDisk;
+import com.google.gson.Gson;
 
 
 
@@ -28,15 +29,16 @@ public class OMEAPIClient {
     private String host;
     
     /**
-     * https://172.16.160.21:2607/api/OME.svc/Devices        设备list
-    	 * https://172.16.160.21:2607/api/OME.svc/Devices/24     查单个带id
-    	 * https://172.16.160.21:2607/api/OME.svc/Devices/68
+     * https://172.16.160.21:2607/api/OME.svc/Devices          设备list
+    	 * https://172.16.160.21:2607/api/OME.svc/Devices/{id}     查询单个设备
     	 * https://172.16.160.21:2607/api/OME.svc/Devices/TableInventory/3      物理卷固定UIR
      * https://172.16.160.21:2607/api/OME.svc/Devices/TableInventory/36     虚拟卷固定UIR
+     * https://172.16.160.21:2607/api/OME.svc/Devices/{id}/TableInventory/3      查询单个物理卷固定UIR
+     * https://172.16.160.21:2607/api/OME.svc/Devices/{id}/TableInventory/36     查询单个虚拟卷固定UIR
      */
-    private static final String DEVICES_ENPOINT = "/api/OME.svc/Devices";
-    private static final String ARRAY_DISK_ENPOINT="/api/OME.svc/Devices/TableInventory/3";
-    private static final String VIRTUAL_DISK_ENPOINT="/api/OME.svc/Devices/TableInventory/36";
+    private static final String BASE_URI = "/api/OME.svc/Devices";
+    private static final String ARRAY_DISK_URI="/TableInventory/3";
+    private static final String VIRTUAL_DISK_URI="/TableInventory/36";
     
    
     public OMEAPIClient(String username, String password, String port, String host) {
@@ -45,6 +47,9 @@ public class OMEAPIClient {
 		this.port = port;
 		this.host = host;
 	}
+    
+
+    
 
 	/**
      * 统一请求方法
@@ -53,8 +58,8 @@ public class OMEAPIClient {
 	 * @throws IOException 
 	 * @throws CookieRestrictionViolationException 
      */
-    public String ome_action(RestClient.RequestMethod method,String enpoint,String... params) throws LoginException, IOException, CookieRestrictionViolationException {
-    		String URL= "https://" + host + ":" + port + enpoint;
+    public String ome_action(RestClient.RequestMethod method,String URI,String... params) throws LoginException, IOException, CookieRestrictionViolationException {
+    		String URL= "https://" + host + ":" + port + BASE_URI;
     		if (null!=params) {
     			for (int i = 0; i < params.length; i++) {
         			if (StringUtils.isNotBlank(params[i])) {
@@ -62,6 +67,7 @@ public class OMEAPIClient {
         			}	
     			}	
 		}
+    		URL+=URI;
     		RestClient client = new RestClient(URL);
     		client.addBasicAuthentication(username, password);
         try {
@@ -91,7 +97,7 @@ public class OMEAPIClient {
      */
     public List<Device> getDeviceList() throws CookieRestrictionViolationException, LoginException, IOException{
     		XmlUitl xmlUitl=new XmlUitl(DevicesResponse.class,CollectionWrapper.class);
-    		String xmlStr=ome_action(RestClient.RequestMethod.GET, DEVICES_ENPOINT);
+    		String xmlStr=ome_action(RestClient.RequestMethod.GET, "");
     		DevicesResponse response = xmlUitl.fromXml(xmlStr);
     		return response.getDevicesResult().getDevices();
     }
@@ -105,7 +111,7 @@ public class OMEAPIClient {
      */
     public DeviceInventoryResult getDevice(String Id) throws CookieRestrictionViolationException, LoginException, IOException{
 		XmlUitl xmlUitl=new XmlUitl(DeviceInventoryResponse.class,CollectionWrapper.class);
-		String xmlStr=ome_action(RestClient.RequestMethod.GET, DEVICES_ENPOINT, Id);
+		String xmlStr=ome_action(RestClient.RequestMethod.GET, "", Id);
 		DeviceInventoryResponse response = xmlUitl.fromXml(xmlStr);
 		return response.getDeviceInventoryResult();
     }
@@ -118,10 +124,24 @@ public class OMEAPIClient {
      */
     public List<ArrayDisk> getArrayDiskList() throws CookieRestrictionViolationException, LoginException, IOException{
     		XmlUitl xmlUitl=new XmlUitl(DocumentElement.class,CollectionWrapper.class);
-		String xmlStr=ome_action(RestClient.RequestMethod.GET, ARRAY_DISK_ENPOINT);
+		String xmlStr=ome_action(RestClient.RequestMethod.GET, ARRAY_DISK_URI);
 		DocumentElement response = xmlUitl.fromXml(xmlStr);
 		return response.getArrayDisk();
     }
+    /**
+     * 根据ID查询单个设备的物理卷
+     * @param Id
+     * @return
+     * @throws CookieRestrictionViolationException
+     * @throws LoginException
+     * @throws IOException
+     */
+    public List<ArrayDisk> getArrayDiskListById(String Id) throws CookieRestrictionViolationException, LoginException, IOException{
+		XmlUitl xmlUitl=new XmlUitl(DocumentElement.class,CollectionWrapper.class);
+	String xmlStr=ome_action(RestClient.RequestMethod.GET, ARRAY_DISK_URI,Id);
+	DocumentElement response = xmlUitl.fromXml(xmlStr);
+	return response.getArrayDisk();
+}
     /**
      * 获取虚拟卷
      * @return
@@ -131,10 +151,24 @@ public class OMEAPIClient {
      */
     public List<VirtualDisk> getVirtualDiskList() throws CookieRestrictionViolationException, LoginException, IOException{
     		XmlUitl xmlUitl=new XmlUitl(DocumentElement.class,CollectionWrapper.class);
-		String xmlStr=ome_action(RestClient.RequestMethod.GET, VIRTUAL_DISK_ENPOINT);
+		String xmlStr=ome_action(RestClient.RequestMethod.GET, VIRTUAL_DISK_URI);
 		DocumentElement response = xmlUitl.fromXml(xmlStr);
 		return response.getVirtualDisk();
     }
+    /**
+     * 根据ID获取单个设备的虚拟卷
+     * @param Id
+     * @return
+     * @throws CookieRestrictionViolationException
+     * @throws LoginException
+     * @throws IOException
+     */
+    public List<VirtualDisk> getVirtualDiskListById(String Id) throws CookieRestrictionViolationException, LoginException, IOException{
+		XmlUitl xmlUitl=new XmlUitl(DocumentElement.class,CollectionWrapper.class);
+		String xmlStr=ome_action(RestClient.RequestMethod.GET, VIRTUAL_DISK_URI,Id);
+		DocumentElement response = xmlUitl.fromXml(xmlStr);
+		return response.getVirtualDisk();
+}
     
 
 }
