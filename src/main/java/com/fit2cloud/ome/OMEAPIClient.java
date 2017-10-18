@@ -57,6 +57,20 @@ public class OMEAPIClient {
 //		System.out.println(list.size()+"---"+new Gson().toJson(list));
 //	}
     
+    
+    
+	public int vaild() throws Exception {
+		String URL = "https://" + host + ":" + port + BASE_URI;
+		RestClient client = new RestClient(URL);
+		client.addBasicAuthentication(username, password);
+		try {
+			client.execute(RestClient.RequestMethod.GET);
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+		return client.getResponseCode();
+	}
+     
 
 	/**
      * 统一请求方法
