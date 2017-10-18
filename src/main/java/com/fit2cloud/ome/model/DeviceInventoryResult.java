@@ -12,7 +12,7 @@ public class DeviceInventoryResult {
 	private List<DeviceCapability> DeviceCapabilities;
 	private List<Enclosure> Enclosures;
 	private List<Firmware> Firmware;
-	private List<MemoryEntries> Memory;
+	private Memorys Memory;
 	private String OS;
 	private List<Processor> Processor;
 	private List<Software> Software;
@@ -69,15 +69,14 @@ public class DeviceInventoryResult {
 	public void setFirmware(List<Firmware> firmware) {
 		Firmware = firmware;
 	}
-	@XmlElementWrapper(name = "Memory")  
-    @XmlElement(name = "MemoryEntries")
-	public List<MemoryEntries> getMemory() {
+	@XmlElement(name = "Memory")
+    public Memorys getMemory() {
 		return Memory;
 	}
-	public void setMemory(List<MemoryEntries> memory) {
+	public void setMemory(Memorys memory) {
 		Memory = memory;
 	}
-    @XmlElement(name = "OS")
+	@XmlElement(name = "OS")
 	public String getOS() {
 		return OS;
 	}
