@@ -50,10 +50,10 @@ public class OMEAPIClient {
     
 //    public static void main(String[] args) throws CookieRestrictionViolationException, LoginException, IOException {
 //    		OMEAPIClient omeapiClient =new OMEAPIClient("administrator", "oppo*123456","2607","172.16.160.21");
-//    		XmlUitl xmlUitl=new XmlUitl(DocumentElement.class,CollectionWrapper.class);
-//    		String xmlStr=omeapiClient.ome_action(RestClient.RequestMethod.GET, ARRAY_DISK_URI);
-//    		DocumentElement response = xmlUitl.fromXml(xmlStr);
-//		List<ArrayDisk> list=response.getArrayDisk();
+//    		XmlUitl xmlUitl=new XmlUitl(DevicesResponse.class,CollectionWrapper.class);
+//    		String xmlStr=omeapiClient.ome_action(RestClient.RequestMethod.GET, "");
+//    		DevicesResponse response = xmlUitl.fromXml(xmlStr);
+//		List<Device> list=response.getDevicesResult().getDevices();
 //		System.out.println(list.size()+"---"+new Gson().toJson(list));
 //	}
     
