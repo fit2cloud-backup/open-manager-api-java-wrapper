@@ -201,8 +201,8 @@ public class RestClient {
 		HttpParams params = client.getParams();
 
 		// Setting 30 second timeouts
-		HttpConnectionParams.setConnectionTimeout(params, 30 * 1000);
-		HttpConnectionParams.setSoTimeout(params, 30 * 1000);
+		HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
+		HttpConnectionParams.setSoTimeout(params, 120 * 1000);
 
 		HttpResponse httpResponse;
 
