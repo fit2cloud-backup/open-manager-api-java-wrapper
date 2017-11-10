@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
  * xml转对象，呵呵呵呵
  * 
  * 
- * @author 爆吴秋德菊花
+ * @author 
  */
 public class XmlUitl {
 	private JAXBContext jaxbContext;
