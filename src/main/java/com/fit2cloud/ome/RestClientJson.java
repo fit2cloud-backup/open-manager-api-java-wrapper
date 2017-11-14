@@ -68,24 +68,19 @@ public class RestClientJson {
 	public RestClientJson(String url) {
 		this.url = url;
 		try {
-			SSLSocketFactory sslsf = new SSLSocketFactory(new TrustSelfSignedStrategy(),
-					new AllowAllHostnameVerifier());
-//			Scheme https = new Scheme("https", 8006, sslsf);
-			SchemeRegistry schemeRegistry = new SchemeRegistry();
-			schemeRegistry.register(new Scheme("https", 8006, sslsf));
-			PoolingClientConnectionManager cm=new PoolingClientConnectionManager(schemeRegistry);
-			cm.setMaxTotal(1000);
-			cm.setDefaultMaxPerRoute(500);
-			client = new DefaultHttpClient(cm);
-//			client.getConnectionManager().getSchemeRegistry().register(https);
+//			SSLSocketFactory sslsf = new SSLSocketFactory(new TrustSelfSignedStrategy(),
+//					new AllowAllHostnameVerifier());
+//			SchemeRegistry schemeRegistry = new SchemeRegistry();
+//			schemeRegistry.register(new Scheme("https", 8006, sslsf));
+//			PoolingClientConnectionManager cm=new PoolingClientConnectionManager(schemeRegistry);
+//			cm.setMaxTotal(1000);
+//			cm.setDefaultMaxPerRoute(500);
+//			client = new DefaultHttpClient(cm);
+			
+			client= CertificateValidationIgnored.getNoCertificateHttpClient(url);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// HttpHost proxy = new HttpHost("192.168.1.1", 8081);
-		// client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
-		// proxy);
-		// System.setProperty(SYS_PROP_SOCKS_PROXY_HOST, "192.168.1.1");
-		// System.setProperty(SYS_PROP_SOCKS_PROXY_PORT, ""+1234);
 		params = new ArrayList<NameValuePair>();
 		headers = new ArrayList<NameValuePair>();
 	}
