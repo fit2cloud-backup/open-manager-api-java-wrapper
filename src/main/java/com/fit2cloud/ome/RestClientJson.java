@@ -33,7 +33,7 @@ import java.util.ArrayList;
 //import org.apache.http.conn.params.ConnRoutePNames;
 
 // Based on http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/
-public class RestClient {
+public class RestClientJson {
 
 	private boolean authentication;
 	private ArrayList<NameValuePair> headers;
@@ -51,6 +51,12 @@ public class RestClient {
 	// HTTP Basic Authentication
 	private String username;
 	private String password;
+	
+	private String cookie;
+
+	
+
+	
 
 	public enum RequestMethod {
 		DELETE, GET, POST, PUT
@@ -59,7 +65,7 @@ public class RestClient {
 	public static final String SYS_PROP_SOCKS_PROXY_HOST = "socksProxyHost";
 	public static final String SYS_PROP_SOCKS_PROXY_PORT = "socksProxyPort";
 
-	public RestClient(String url) {
+	public RestClientJson(String url) {
 		this.url = url;
 		try {
 			SSLSocketFactory sslsf = new SSLSocketFactory(new TrustSelfSignedStrategy(),
@@ -190,6 +196,14 @@ public class RestClient {
 	public int getResponseCode() {
 		return responseCode;
 	}
+	
+	public String getCookie() {
+		return cookie;
+	}
+
+	public void setCookie(String cookie) {
+		this.cookie = cookie;
+	}
 
 	public void setJSONString(String data) {
 		jsonBody = data;
@@ -207,6 +221,10 @@ public class RestClient {
 
 		try {
 			httpResponse = client.execute(request);
+			
+			//TODO:蛋疼 dsm藏在header的cookie，明明可以在返回的json参数中，偏偏放这里
+			cookie=httpResponse.getFirstHeader("Set-Cookie").getValue();
+			
 			responseCode = httpResponse.getStatusLine().getStatusCode();
 			message = httpResponse.getStatusLine().getReasonPhrase();
 

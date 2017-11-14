@@ -90,6 +90,7 @@ public class OMEAPIClient {
 		}
     		URL+=URI;
     		RestClient client = new RestClient(URL);
+    		client.addHeader("Content-Type", "application/xml");
     		client.addBasicAuthentication(username, password);
         try {
 			client.execute(method);
